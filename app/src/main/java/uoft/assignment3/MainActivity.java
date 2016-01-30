@@ -17,6 +17,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -31,15 +32,12 @@ import android.widget.FrameLayout;
 
 import android.widget.Toast;
 
-import android.hardware.SensorListener;
-import android.hardware.SensorManager;
-import android.content.Context;
-import java.lang.UnsupportedOperationException;
+
 
 @SuppressWarnings("deprecation")
 public class MainActivity extends Activity {
     private static final String TAG = "CamTestActivity";
-
+    private ShakeListener mShaker;
 
     Preview preview;
     Camera camera;
@@ -59,22 +57,31 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         // preview
         preview = new Preview(this, (SurfaceView)findViewById(R.id.surfaceView));
-        //preview.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         ((FrameLayout) findViewById(R.id.preview)).addView(preview);
         preview.setKeepScreenOn(true);
 
-//        preview.setOnClickListener(new OnClickListener() {
-//
-//            @Override
-//            public void onClick(View arg0) {
-//                Toast.makeText(ctx, "take photo", Toast.LENGTH_LONG).show();
-//                camera.takePicture(shutterCallback, rawCallback, jpegCallback);
-//            }
-//        });
 
         Toast.makeText(ctx, getString(R.string.take_photo_help),Toast.LENGTH_SHORT).show();
 
+        //shake it off
+        mShaker = new ShakeListener(this);
+        mShaker.setOnShakeListener(
+                new ShakeListener.OnShakeListener () {
+                   public void onShake() {
+                       Toast.makeText(MainActivity.this, "Taking picture in 1 second", Toast.LENGTH_SHORT).show();
+                       new CountDownTimer(50000, 1000) {
 
+                           public void onTick(long millisUntilFinished) {
+                           }
+
+                           public void onFinish() {
+                               Toast.makeText(MainActivity.this, "Picture Took ", Toast.LENGTH_LONG).show();
+
+                           }
+                       }.start();
+                       camera.takePicture(shutterCallback, rawCallback, jpegCallback);
+                }
+               });
 
         // button click to view pictures;
         buttonClick = (Button) findViewById(R.id.display);
@@ -99,6 +106,7 @@ public class MainActivity extends Activity {
                 Toast.makeText(ctx, getString(R.string.camera_not_found), Toast.LENGTH_LONG).show();
             }
         }
+        mShaker.resume();
     }
 
     @Override
@@ -109,6 +117,7 @@ public class MainActivity extends Activity {
             camera.release();
             camera = null;
         }
+        mShaker.pause();
         super.onPause();
     }
 

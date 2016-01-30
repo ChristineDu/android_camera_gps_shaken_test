@@ -1,5 +1,7 @@
 package uoft.assignment3;
 
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -29,48 +31,58 @@ import android.widget.FrameLayout;
 
 import android.widget.Toast;
 
+import android.hardware.SensorListener;
+import android.hardware.SensorManager;
+import android.content.Context;
+import java.lang.UnsupportedOperationException;
+
 @SuppressWarnings("deprecation")
 public class MainActivity extends Activity {
     private static final String TAG = "CamTestActivity";
+
+
     Preview preview;
     Camera camera;
     Activity act;
     Context ctx;
     Button buttonClick;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         ctx = this;
         act = this;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_main);
-
+        // preview
         preview = new Preview(this, (SurfaceView)findViewById(R.id.surfaceView));
         //preview.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        ((FrameLayout) findViewById(R.id.layout)).addView(preview);
+        ((FrameLayout) findViewById(R.id.preview)).addView(preview);
         preview.setKeepScreenOn(true);
 
-        preview.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                Toast.makeText(ctx, "take photo", Toast.LENGTH_LONG).show();
-                camera.takePicture(shutterCallback, rawCallback, jpegCallback);
-            }
-        });
-
-        Toast.makeText(ctx, getString(R.string.take_photo_help), Toast.LENGTH_LONG).show();
-
-
-        buttonClick = (Button) findViewById(R.id.display);
-
-//        buttonClick.setOnClickListener(new OnClickListener() {
-//            public void onClick(View v) {
-//                Toast.makeText(ctx, "buttonbutton", Toast.LENGTH_LONG).show();
+//        preview.setOnClickListener(new OnClickListener() {
+//
+//            @Override
+//            public void onClick(View arg0) {
+//                Toast.makeText(ctx, "take photo", Toast.LENGTH_LONG).show();
+//                camera.takePicture(shutterCallback, rawCallback, jpegCallback);
 //            }
 //        });
+
+        Toast.makeText(ctx, getString(R.string.take_photo_help),Toast.LENGTH_SHORT).show();
+
+
+
+        // button click to view pictures;
+        buttonClick = (Button) findViewById(R.id.display);
+        buttonClick.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                Toast.makeText(ctx, "buttonbutton", Toast.LENGTH_LONG).show();
+            }
+        });
 
     }
 
@@ -119,7 +131,6 @@ public class MainActivity extends Activity {
 
     PictureCallback rawCallback = new PictureCallback() {
         public void onPictureTaken(byte[] data, Camera camera) {
-            //			 Log.d(TAG, "onPictureTaken - raw");
         }
     };
 
@@ -164,4 +175,6 @@ public class MainActivity extends Activity {
         }
 
     }
+
+
 }

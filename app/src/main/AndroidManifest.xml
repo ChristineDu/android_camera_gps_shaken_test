@@ -21,8 +21,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ImageGallery">
+        <activity android:name=".ImageGallery"
+            android:largeHeap="true" >
         </activity>
+        <activity android:name=".ImageShow">
+            </activity>
+
     </application>
 
 </manifest>

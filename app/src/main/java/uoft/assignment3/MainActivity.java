@@ -100,8 +100,8 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 //Toast.makeText(ctx, "buttonbutton", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(ctx, ImageGallery.class);
-                String message = "/Assignment3";
-                intent.putExtra("FILELOCATION", message);
+                //String message = "/Assignment3";
+                //intent.putExtra("FILELOCATION", message);
                 startActivity(intent);
             }
         });
